@@ -1,0 +1,123 @@
+from craigscraper import scrape_craigslist
+from openai import OpenAI
+from utils import *
+
+def askGPT(request, items):
+    request_id, u_id, item_name, description, pic, last_scan = request
+    # user_description = "I am looking for a cabinet for my Gundam model kit collections."
+    # sample_image_path = "sample.jpeg"
+    # image_urls = [
+    #     "https://images.craigslist.org/01010_7PXYUta3QhK_0x40t2_600x450.jpg",
+    #     "https://images.craigslist.org/00606_isRFd4rz1PZ_0pL0CI_600x450.jpg"
+    # ]
+
+
+    base64_image = encode_image(sample_image_path)
+
+    # Build the messages list dynamically
+    messages = [
+        {
+            "role": "system",
+            "content": [
+                {
+                    "type": "text",
+                    "text": "You are an shopping assistance. The user will first provide the description of \ "
+                            "an item and optionally a picture of it. This does not require a respond. After that, \ "
+                            "the user will be providing different pictures of different products, and you should respond "
+                            "with a score of 0 to 100 in terms of if the product is what the customer wants for each of them. "
+                            "The response should only contain the image url and the score, like this <image_url1>: <score>, "
+                            "<image_url2>: <score>"
+                }]
+        }
+    ]
+
+
+    text_description = "I am looking for a cabinet for my Gundam model kit collections and the attached image is what I am looking for"
+    first_content = []
+    if text_description:
+        first_content.append(
+            {
+                "type": "text",
+                "text": user_description
+            }
+        )
+
+    # Add the base64-encoded sample image (optional)
+    if base64_image:
+        first_content.append(
+            {
+                "type": "image_url",
+                "image_url":{
+                    "url": f"data:image/jpeg;base64,{base64_image}"
+                }
+            }
+        )
+
+    product_message = {
+        "role": "user",
+        "content" : first_content
+    }
+
+    messages.append(product_message)
+    # Add each image URL to the messages
+    for item in items:
+        url = item['url']
+        image_url = item['image_urls'][0]
+        messages.append(
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "text",
+                        "text": f"here is image from {url}"
+                    },
+                    {
+                        "type": "image_url",
+                        "image_url": {
+                            "url": image_url
+                        }
+                    }
+                ]
+            }
+        )
+
+    client = OpenAI()
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=messages,
+        response_format={
+            "type": "text"
+        },
+        temperature=1,
+        max_tokens=2048,
+        top_p=1,
+        frequency_penalty=0,
+        presence_penalty=0
+    )
+    print(response.choices[0].to_dict()['message']['content'])
+
+    # print(response.choices[0])
+    # print(messages)
+    # response = [Choice(finish_reason='stop', index=0, logprobs=None, message=ChatCompletionMessage(content='https://images.craigslist.org/01010_7PXYUta3QhK_0x40t2_600x450.jpg: 70, https://images.craigslist.org/00606_isRFd4rz1PZ_0pL0CI_600x450.jpg: 80', refusal=None, role='assistant', audio=None, function_call=None, tool_calls=None))]
+
+
+#[Choice(finish_reason='stop', index=0, logprobs=None,
+# message=ChatCompletionMessage(content='https://images.craigslist.org/01010_7PXYUta3QhK_0x40t2_600x450.jpg: 70,
+# https://images.craigslist.org/00606_isRFd4rz1PZ_0pL0CI_600x450.jpg: 80', refusal=None, role='assistant',
+# audio=None, function_call=None, tool_calls=None))]
+
+item_name = 'display cabinet'
+user_description = "I am looking for a cabinet for my Gundam model kit collections."
+sample_image_path = "sample_2.jpeg"
+request = [1,1,item_name, user_description, sample_image_path, '2024-12-02 11:45:51']
+
+items = scrape_craigslist(query=item_name, lastSearchTime='2024-12-02 11:45:51')
+#
+# for item in items:
+#     print(f'{item["url"]} : {item["image_urls"]}')
+askGPT(request,items)
+
+
+
+
+
