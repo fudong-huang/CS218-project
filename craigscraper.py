@@ -3,9 +3,9 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 import craigslistscraper as cs
 
-def scrape_craigslist(query, city="sfbay", category="fuo", lastSearchTime='2024-12-01 11:45:51'):
+def scrape_craigslist(item_name, city="sfbay", category="fuo", lastSearchTime='2024-12-01 11:45:51'):
     search = cs.Search(
-        query=query,
+        query=item_name,
         city=city,
         category=category
     )
@@ -14,7 +14,6 @@ def scrape_craigslist(query, city="sfbay", category="fuo", lastSearchTime='2024-
     status = search.fetch()
     if status != 200:
         raise Exception(f"Unable to fetch search with status <{status}>.")
-
     for ad in search.ads[0:10]:
         # Fetch additional information about each ad
         status = ad.fetch()

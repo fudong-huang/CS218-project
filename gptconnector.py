@@ -3,7 +3,7 @@ from openai import OpenAI
 from utils import *
 
 def askGPT(request, items):
-    request_id, u_id, item_name, description, pic, last_scan = request
+    request_id, u_id, item_name, user_description, sample_image_path, last_scan = request
     # user_description = "I am looking for a cabinet for my Gundam model kit collections."
     # sample_image_path = "sample.jpeg"
     # image_urls = [
@@ -21,26 +21,34 @@ def askGPT(request, items):
             "content": [
                 {
                     "type": "text",
-                    "text": "You are an shopping assistance. The user will first provide the description of \ "
-                            "an item and optionally a picture of it. This does not require a respond. After that, \ "
-                            "the user will be providing different pictures of different products, and you should respond "
-                            "with a score of 0 to 100 in terms of if the product is what the customer wants for each of them. "
-                            "The response should only contain the image url and the score, like this <image_url1>: <score>, "
-                            "<image_url2>: <score>"
+                    "text": "You are an shopping assistance. The user will first provide the description "
+                            "of an item and optionally a picture of it. This does not require a respond. "
+                            "After that, the user will be providing different pictures of different products, "
+                            "and you should rate each item with a score of 0 to 100 in terms of if the product "
+                            "is what the customer wants for each of them, and only respond with the item that "
+                            "has a score higher than 70. The response should be in json format containing the "
+                            "url the item is from, image url, and the score\n"
                 }]
         }
     ]
 
 
-    text_description = "I am looking for a cabinet for my Gundam model kit collections and the attached image is what I am looking for"
+    # text_description = "I am looking for a cabinet for my Gundam model kit collections and the attached image is what I am looking for"
     first_content = []
-    if text_description:
+    if user_description:
         first_content.append(
             {
                 "type": "text",
                 "text": user_description
             }
         )
+    else:        first_content.append(
+        {
+            "type": "text",
+            "text": f"Looking for a {item_name}"
+        }
+    )
+
 
     # Add the base64-encoded sample image (optional)
     if base64_image:
@@ -94,7 +102,7 @@ def askGPT(request, items):
         frequency_penalty=0,
         presence_penalty=0
     )
-    print(response.choices[0].to_dict()['message']['content'])
+    return(response.choices[0].to_dict()['message']['content'])
 
     # print(response.choices[0])
     # print(messages)
@@ -106,16 +114,7 @@ def askGPT(request, items):
 # https://images.craigslist.org/00606_isRFd4rz1PZ_0pL0CI_600x450.jpg: 80', refusal=None, role='assistant',
 # audio=None, function_call=None, tool_calls=None))]
 
-item_name = 'display cabinet'
-user_description = "I am looking for a cabinet for my Gundam model kit collections."
-sample_image_path = "sample_2.jpeg"
-request = [1,1,item_name, user_description, sample_image_path, '2024-12-02 11:45:51']
 
-items = scrape_craigslist(query=item_name, lastSearchTime='2024-12-02 11:45:51')
-#
-# for item in items:
-#     print(f'{item["url"]} : {item["image_urls"]}')
-askGPT(request,items)
 
 
 

@@ -8,8 +8,7 @@ def db_connect():
         password="Hadoop123!",
         database="craig"
     )
-    cursor = conn.cursor()
-    return cursor
+    return conn
 
 def queryRequest(cursor):
     query = "SELECT requestId, uId, item_name, description, pic, last_scan FROM request"
