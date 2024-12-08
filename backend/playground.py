@@ -18,6 +18,8 @@ def decode_image(encoded_data, output_path):
         output_path (str): Path to save the decoded image file.
     """
     with open(output_path, "wb") as file:
+        print(type(encoded_data))
+        print(encoded_data.decode('utf-8'))
         file.write(base64.b64decode(encoded_data))
 with db_connect() as conn:
     with conn.cursor() as cursor:
@@ -34,7 +36,7 @@ with db_connect() as conn:
         select_query = "SELECT code FROM pic LIMIT 1"  # Get the most recent entry
         cursor.execute(select_query)
         result = cursor.fetchone()  # Fetch the first row
-        print(result)
+        # print(result)
         if result:
             retrieved_image = result[0]  # Base64-encoded image data
             decode_image(retrieved_image, output_path)

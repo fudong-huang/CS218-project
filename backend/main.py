@@ -114,7 +114,7 @@ def lambda_handler(event, context):
         conn = db_connect()
         cursor = conn.cursor()
         scan_request = get_request_from_db(cursor, request_id)
-        print(scan_request)
+        # print(scan_request)
         if not scan_request:
             return {
                 'statusCode': 404,

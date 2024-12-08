@@ -10,7 +10,7 @@ def askGPT(request, items):
     # ]
 
     if sample_image:
-        base64_image = sample_image
+        base64_image = sample_image.decode('utf-8')
     else:
         base64_image = None
 
@@ -60,8 +60,8 @@ def askGPT(request, items):
             {
                 "type": "image_url",
                 "image_url":{
-                    # "url": f"data:image/jpeg;base64,{base64_image}"
-                    "url": f"{base64_image}"
+                    "url": f"data:image/jpeg;base64,{base64_image}"
+                    # "url": f"{base64_image}"
                 }
             }
         )
@@ -130,7 +130,7 @@ def askGPT(request, items):
     )
     return(response.choices[0].to_dict()['message']['content'])
 
-    response = [Choice(finish_reason='stop', index=0, logprobs=None, message=ChatCompletionMessage(content='https://images.craigslist.org/01010_7PXYUta3QhK_0x40t2_600x450.jpg: 70, https://images.craigslist.org/00606_isRFd4rz1PZ_0pL0CI_600x450.jpg: 80', refusal=None, role='assistant', audio=None, function_call=None, tool_calls=None))]
+    # response = [Choice(finish_reason='stop', index=0, logprobs=None, message=ChatCompletionMessage(content='https://images.craigslist.org/01010_7PXYUta3QhK_0x40t2_600x450.jpg: 70, https://images.craigslist.org/00606_isRFd4rz1PZ_0pL0CI_600x450.jpg: 80', refusal=None, role='assistant', audio=None, function_call=None, tool_calls=None))]
 
 
 #[Choice(finish_reason='stop', index=0, logprobs=None,
