@@ -1,6 +1,5 @@
 ###Need to modify search.py with if not price skip from craiglistscraper to skip wanted post
 ###Need to update last scan time
-from random import sample
 
 from craigscraper import *
 from gptconnector import askGPT
@@ -13,10 +12,9 @@ with db_connect() as conn:
         requests = cursor.fetchall()
 
         for request in requests:
-            request_id, u_id, item_name, user_description, sample_image, lastSearchTime = request
-            lastSearchTime = lastSearchTime.strftime("%Y-%m-%d %H:%M:%S")
-            print(f"Submitting request on {item_name} with {lastSearchTime}")
-            items = scrape_craigslist(item_name=item_name, lastSearchTime= lastSearchTime)
+            request_id, u_id, item_name, user_description, sample_image, status = request
+            print(f"Submitting request on {item_name}")
+            items = scrape_craigslist(item_name=item_name)
             for item in items:
                 print(f'{item["url"]} : {item["image_urls"]}')
             items_dict = {item['url']: item for item in items}
@@ -29,6 +27,7 @@ with db_connect() as conn:
             if not isinstance(results, list):
                 results = [results]
             for result in results:
+                print(f"Processing result : {result}")
                 url = result["url"]
                 if url in items_dict:
                     image_url = items_dict[url]["image_urls"][0]
@@ -42,7 +41,7 @@ with db_connect() as conn:
 
                     update_query = """
                     UPDATE requests
-                    SET last_scan = NOW()
+                    SET status = "completed"
                     WHERE request_id = %s;
                     """
                     cursor.execute(update_query, (request_id,))

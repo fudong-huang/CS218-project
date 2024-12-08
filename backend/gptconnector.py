@@ -29,7 +29,12 @@ def askGPT(request, items):
                             "and you should rate each item with a score of 0 to 100 in terms of if the product "
                             "is what the customer wants for each of them, and only respond with the item that "
                             "has a score higher than 70. The response should be in json format containing the "
-                            "{url the item is from}, {image_url} if any, and the score\n"
+                            f"url, the item is from, image_url if any, and the score\n This is a list of objects, "
+                            f"where each object represents an item with the following properties: url: A string containing "
+                            f"the URL to the item listing (e.g., a link to a product on a website like Craigslist). "
+                            f"image_url: A string containing the URL of an image related to the item (e.g., a photo of the product). "
+                            f"score: A numeric value that represents a score or rating associated with the item (e.g., a relevance or similarity score)."
+                            f" The JSON is structured as an array, where each element in the array is an object with these three properties."
                 }]
         }
     ]
@@ -50,7 +55,6 @@ def askGPT(request, items):
             "text": f"Looking for a {item_name}"
         }
     )
-
 
     # Add the base64-encoded sample image (optional)
     if base64_image:
@@ -128,7 +132,7 @@ def askGPT(request, items):
     )
     return(response.choices[0].to_dict()['message']['content'])
 
-    #response = [Choice(finish_reason='stop', index=0, logprobs=None, message=ChatCompletionMessage(content='https://images.craigslist.org/01010_7PXYUta3QhK_0x40t2_600x450.jpg: 70, https://images.craigslist.org/00606_isRFd4rz1PZ_0pL0CI_600x450.jpg: 80', refusal=None, role='assistant', audio=None, function_call=None, tool_calls=None))]
+    response = [Choice(finish_reason='stop', index=0, logprobs=None, message=ChatCompletionMessage(content='https://images.craigslist.org/01010_7PXYUta3QhK_0x40t2_600x450.jpg: 70, https://images.craigslist.org/00606_isRFd4rz1PZ_0pL0CI_600x450.jpg: 80', refusal=None, role='assistant', audio=None, function_call=None, tool_calls=None))]
 
 
 #[Choice(finish_reason='stop', index=0, logprobs=None,
