@@ -1,6 +1,4 @@
-from craigscraper import scrape_craigslist
 from openai import OpenAI
-from utils import *
 
 def askGPT(request, items):
     request_id, u_id, item_name, user_description, sample_image, last_scan = request

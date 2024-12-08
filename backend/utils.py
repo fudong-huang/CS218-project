@@ -1,12 +1,17 @@
 import mysql.connector
 import base64
+import os
 
 def db_connect():
+    DB_HOST = os.environ['DB_HOST']
+    DB_USER = os.environ['DB_USER']
+    DB_PASSWORD = os.environ['DB_PASSWORD']
+    DB_NAME = os.environ['DB_NAME']
     conn = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="Hadoop123!",
-        database="craig"
+        host=DB_HOST,
+        user=DB_USER,
+        password=DB_PASSWORD,
+        database=DB_NAME
     )
     return conn
 

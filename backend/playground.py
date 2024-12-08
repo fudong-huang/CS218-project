@@ -6,9 +6,9 @@ sys.path.append(os.path.abspath("CraigslistScraper-master"))
 import craigslistscraper as cs
 
 
-image_path = "sample.jpeg"
-output_path = "test_db.jpeg"
-base_image = encode_image("sample_3.jpeg")
+image_path = "sample_picture/sample.jpeg"
+output_path = "sample_picture/test_db.jpeg"
+base_image = encode_image("sample_picture/sample_3.jpeg")
 encoded_string_file = "encode_string.txt"
 def decode_image(encoded_data, output_path):
     """
@@ -21,14 +21,14 @@ def decode_image(encoded_data, output_path):
         file.write(base64.b64decode(encoded_data))
 with db_connect() as conn:
     with conn.cursor() as cursor:
-        # Encode the image and insert into the database
-        encoded_image = encode_image(image_path)
-        with open(encoded_string_file, "w") as file:
-            file.write(encoded_image)
-        insert_query = "INSERT INTO pic (code) VALUES (%s)"
-        cursor.execute(insert_query, (encoded_image,))
-        conn.commit()
-        print("Image successfully encoded and saved to the database.")
+        # # Encode the image and insert into the database
+        # encoded_image = encode_image(image_path)
+        # with open(encoded_string_file, "w") as file:
+        #     file.write(encoded_image)
+        # insert_query = "INSERT INTO pic (code) VALUES (%s)"
+        # cursor.execute(insert_query, (encoded_image,))
+        # conn.commit()
+        # print("Image successfully encoded and saved to the database.")
 
         # Fetch the encoded image back from the database
         select_query = "SELECT code FROM pic LIMIT 1"  # Get the most recent entry
