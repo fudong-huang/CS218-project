@@ -3,7 +3,7 @@ from openai import OpenAI
 from utils import *
 
 def askGPT(request, items):
-    request_id, u_id, item_name, user_description, sample_image_path, last_scan = request
+    request_id, u_id, item_name, user_description, sample_image, last_scan = request
     # user_description = "I am looking for a cabinet for my Gundam model kit collections."
     # sample_image_path = "sample.jpeg"
     # image_urls = [
@@ -11,8 +11,8 @@ def askGPT(request, items):
     #     "https://images.craigslist.org/00606_isRFd4rz1PZ_0pL0CI_600x450.jpg"
     # ]
 
-    if sample_image_path:
-        base64_image = encode_image(sample_image_path)
+    if sample_image:
+        base64_image = sample_image
     else:
         base64_image = None
 
@@ -58,7 +58,8 @@ def askGPT(request, items):
             {
                 "type": "image_url",
                 "image_url":{
-                    "url": f"data:image/jpeg;base64,{base64_image}"
+                    # "url": f"data:image/jpeg;base64,{base64_image}"
+                    "url": f"{base64_image}"
                 }
             }
         )

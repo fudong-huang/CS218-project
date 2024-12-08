@@ -1,5 +1,7 @@
 ###Need to modify search.py with if not price skip from craiglistscraper to skip wanted post
 ###Need to update last scan time
+from random import sample
+
 from craigscraper import *
 from gptconnector import askGPT
 from utils import *
@@ -11,7 +13,7 @@ with db_connect() as conn:
         requests = cursor.fetchall()
 
         for request in requests:
-            request_id, u_id, item_name, user_description, sample_image_path, lastSearchTime = request
+            request_id, u_id, item_name, user_description, sample_image, lastSearchTime = request
             lastSearchTime = lastSearchTime.strftime("%Y-%m-%d %H:%M:%S")
             print(f"Submitting request on {item_name} with {lastSearchTime}")
             items = scrape_craigslist(item_name=item_name, lastSearchTime= lastSearchTime)
@@ -24,7 +26,8 @@ with db_connect() as conn:
             results = results.replace('json', '').replace('`', '')
             results = json.loads(results)
             print(results)
-
+            if not isinstance(results, list):
+                results = [results]
             for result in results:
                 url = result["url"]
                 if url in items_dict:
@@ -32,7 +35,7 @@ with db_connect() as conn:
                     score = result["score"]
                     # Insert the data into the 'results' table
                     insert_query = """
-                                INSERT INTO results (requestId, url, image_url, score)
+                                INSERT INTO results (request_id, url, image_url, score)
                                 VALUES (%s,  %s, %s, %s)
                                 """
                     cursor.execute(insert_query, (request_id, url, image_url, score))
@@ -40,7 +43,7 @@ with db_connect() as conn:
                     update_query = """
                     UPDATE requests
                     SET last_scan = NOW()
-                    WHERE requestId = %s;
+                    WHERE request_id = %s;
                     """
                     cursor.execute(update_query, (request_id,))
                     conn.commit()

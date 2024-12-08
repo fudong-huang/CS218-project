@@ -3,8 +3,14 @@ import time
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
-import craigslistscraper as cs
+import sys
+import os
 
+# Add the CraigslistScraper-master folder to sys.path
+sys.path.append(os.path.abspath("CraigslistScraper-master"))
+
+# Now you can import the package/module
+import craigslistscraper as cs
 
 def scrape_craigslist(item_name, city="sfbay", lastSearchTime='2024-12-01 11:45:51'):
     search = cs.Search(
@@ -16,7 +22,7 @@ def scrape_craigslist(item_name, city="sfbay", lastSearchTime='2024-12-01 11:45:
     status = search.fetch()
     if status != 200:
         raise Exception(f"Unable to fetch search with status <{status}>.")
-    for ad in search.ads[0:10]:
+    for ad in search.ads[0:60]:
         # time.sleep(1)
         # Fetch additional information about each ad
         status = ad.fetch()
@@ -34,26 +40,30 @@ def scrape_craigslist(item_name, city="sfbay", lastSearchTime='2024-12-01 11:45:
             continue
 
         soup = BeautifulSoup(response.text, 'html.parser')
-        itemTime = soup.find('time', class_='date').text.strip()
-        if itemTime:
-            if  isNewItem(itemTime, lastSearchTime):
-                # print(f'{data["url"]}, {itemTime}, {lastSearchTime}')
-                items.append(data)
+        # itemTime = soup.find('time', class_='date').text.strip()
+        # if itemTime:
+        #     if  isNewItem(itemTime, lastSearchTime):
+        #         # print(f'{data["url"]}, {itemTime}, {lastSearchTime}')
+        #         items.append(data)
         if not data['image_urls']:
             image_urls = []
             img_tags = soup.find_all("img")
             for img_tag in img_tags:
                 image_urls.append(img_tag['src'])
-            data['image_urls'] = image_urls
+            if image_urls:
+                data['image_urls'] = image_urls
+            else:
+                data['image_urls'] = ['https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png']
+        items.append(data)
 
     print(f"New items found : {len(items)}")
     return items
 
 ##
-def isNewItem(itemTime, lastSearchTime):
-    dt1 = datetime.strptime(itemTime, "%Y-%m-%d %H:%M")
-    dt2 = datetime.strptime(lastSearchTime, "%Y-%m-%d %H:%M:%S")
-    return dt1 > dt2
+# def isNewItem(itemTime, lastSearchTime):
+#     dt1 = datetime.strptime(itemTime, "%Y-%m-%d %H:%M")
+#     dt2 = datetime.strptime(lastSearchTime, "%Y-%m-%d %H:%M:%S")
+#     return dt1 > dt2
 
 # items = scrape_craigslist("display cabinet")
 # for item in items:
