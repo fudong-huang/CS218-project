@@ -6,31 +6,35 @@ import { Input } from "@/components/ui/input";
 import { Plus, Search, Bell, Settings, Upload } from 'lucide-react';
 import ResultsDialog from './ResultsDialog';
 
-const RequestCard = ({ title, status, request_id, onResultsClick }) => (
-    <Card 
-        className="p-0 overflow-hidden hover:shadow-lg transition-all duration-200 cursor-pointer"
-        onClick={() => onResultsClick(request_id)}
-    >
-      <CardContent className="p-0">
-        <div className="p-6">
-          <h3 className="text-lg font-medium text-[#1a1a1a] mb-2">{title}</h3>
-          <span className={`px-3 py-1 rounded-full text-sm font-medium inline-flex items-center ${
-            status === 'Pending' 
-              ? 'bg-yellow-100 text-yellow-700'
-              : 'bg-green-100 text-green-700'
-          }`}>
-            <span className={`w-2 h-2 rounded-full mr-2 ${
-              status === 'Pending' 
-                ? 'bg-yellow-500'
-                : 'bg-green-500'
-            }`}></span>
-            {status}
-          </span>
-        </div>
-      </CardContent>
-    </Card>
-  );
 
+const RequestCard = ({ title, status, request_id, onResultsClick }) => (
+  <Card 
+    className="p-0 overflow-hidden hover:shadow-lg transition-all duration-200 cursor-pointer"
+    onClick={() => onResultsClick(request_id)}
+  >
+    <CardContent className="p-0">
+      <div className="p-6">
+        <h3 className="text-lg font-medium text-[#1a1a1a] mb-2">{title}</h3>
+        <span className={`px-3 py-1 rounded-full text-sm font-medium inline-flex items-center ${
+          status === 'pending' 
+            ? 'bg-yellow-100 text-yellow-700'
+            : status === 'completed'
+            ? 'bg-green-100 text-green-700'
+            : 'bg-gray-100 text-gray-700' // For any other status
+        }`}>
+          <span className={`w-2 h-2 rounded-full mr-2 ${
+            status === 'Pending'
+              ? 'bg-yellow-500'
+              : status === 'completed'
+              ? 'bg-green-500'
+              : 'bg-gray-500' // For any other status
+          }`}></span>
+          {status}
+        </span>
+      </div>
+    </CardContent>
+  </Card>
+);
 const CreateRequestDialog = ({onRequestSubmitted }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [title, setTitle] = useState('');
