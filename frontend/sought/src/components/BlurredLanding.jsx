@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { useNavigate } from 'react-router-dom'
 import { ArrowRight, Search, Bell, Settings, 
          Calendar, MessageSquare, Shield, Home, 
