@@ -239,6 +239,7 @@ const CreateRequestDialog = ({onRequestSubmitted }) => {
                 method: 'GET',
                 headers: {
                   'Content-Type': 'application/json',
+                  'Origin': window.location.origin,
                 },
               });
       
@@ -271,6 +272,7 @@ const CreateRequestDialog = ({onRequestSubmitted }) => {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
+              'Origin': window.location.origin,
             },
             body: JSON.stringify({
               request_id: requestId,

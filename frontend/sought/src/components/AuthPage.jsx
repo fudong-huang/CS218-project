@@ -11,6 +11,7 @@ import { ArrowLeft, Mail, Lock, User, Search, Bell, Settings,
 const API_URL = import.meta.env.PROD 
   ? 'https://zavgymhiie.execute-api.us-west-1.amazonaws.com/dev'
   : '/api';
+
 const TopNav = () => (
   <div className="w-full flex items-center justify-between mb-6 px-4">
     <div className="flex items-center gap-2">
@@ -59,6 +60,7 @@ const AuthPage = () => {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
+              'Origin': window.location.origin,
             },
             body: JSON.stringify({
               email,
