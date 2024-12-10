@@ -60,8 +60,13 @@ const AuthPage = () => {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              'Origin': window.location.origin,
+              'Accept': 'application/json',
+              'Access-Control-Allow-Origin': '*',
+              'Access-Control-Allow-Methods': 'POST',
+              'Access-Control-Allow-Headers': 'Content-Type'
             },
+            mode: 'cors',
+            credentials: 'omit',
             body: JSON.stringify({
               email,
               password,
