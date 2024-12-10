@@ -7,6 +7,10 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowLeft, Mail, Lock, User, Search, Bell, Settings, 
          Calendar, MessageSquare, Shield, Home } from 'lucide-react';
 
+
+const API_URL = import.meta.env.PROD 
+  ? 'https://zavgymhiie.execute-api.us-west-1.amazonaws.com/dev'
+  : '/api';
 const TopNav = () => (
   <div className="w-full flex items-center justify-between mb-6 px-4">
     <div className="flex items-center gap-2">
@@ -48,8 +52,8 @@ const AuthPage = () => {
         setError('');
       
         const endpoint = isSignIn 
-            ? '/api/login'   
-            : '/api/signup'; 
+        ? `${API_URL}/login`   
+        : `${API_URL}/signup`; 
         try {
           const response = await fetch(endpoint, {
             method: 'POST',

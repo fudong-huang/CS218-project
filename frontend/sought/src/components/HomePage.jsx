@@ -6,6 +6,9 @@ import { Input } from "@/components/ui/input";
 import { Plus, Search, Bell, Settings, Upload } from 'lucide-react';
 import ResultsDialog from './ResultsDialog';
 
+const API_URL = import.meta.env.PROD 
+  ? 'https://zavgymhiie.execute-api.us-west-1.amazonaws.com/dev'
+  : '/api';
 
 const RequestCard = ({ title, status, request_id, onResultsClick }) => (
   <Card 
@@ -43,11 +46,12 @@ const CreateRequestDialog = ({onRequestSubmitted }) => {
     const [image, setImage] = useState(null);
     const [imagePreview, setImagePreview] = useState(null);
     const [fileName, setFileName] = useState('');
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
           const uid = localStorage.getItem('uid');
-          const response = await fetch('/api/user-request', {
+          const response = await fetch(`${API_URL}/user-request`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -231,7 +235,7 @@ const CreateRequestDialog = ({onRequestSubmitted }) => {
     useEffect(() => {
         const fetchRequests = async () => {
           try {
-            const response = await fetch(`/api/pull?uid=${uid}`, {
+            const response = await fetch(`${API_URL}/user-request`, {
                 method: 'GET',
                 headers: {
                   'Content-Type': 'application/json',
